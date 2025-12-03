@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
+from django.contrib.auth import logout
 from django.contrib.auth.forms import AuthenticationForm 
 from django.contrib import messages
 
@@ -24,3 +25,8 @@ def login_page(request):
 
 def home_redirect(request) :
     return redirect('login')
+
+def logout_view(request):
+    logout(request)
+    messages.info(request, 'Logged Out!')
+    return redirect('home')

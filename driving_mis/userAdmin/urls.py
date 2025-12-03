@@ -5,8 +5,7 @@ from django.contrib.auth import views as auth_views
 app_name = 'userAdmin'
 
 urlpatterns = [
-    path('/logout', auth_views.LogoutView.as_view(), name='logout'),
-
+    
     path('dashboard/', views.dashboard_page, name='dashboard'),
     path('students/', views.students_page, name='students'),
     path('payments/', views.payments_page, name='payments'),

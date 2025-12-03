@@ -14,7 +14,7 @@
     <!-- Top bar -->
     <div class="topbar">
         <div class="title">Driving Institute Management System</div>
-        <form action="{% url 'userAdmin:logout' %}" method='POST'>
+        <form action="{% url 'logout' %}" method='POST'>
             {% csrf_token %}
             <button>Logout</button>
         </form>

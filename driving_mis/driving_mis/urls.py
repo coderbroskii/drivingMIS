@@ -22,6 +22,7 @@ urlpatterns = [
     path('django-admin/', admin.site.urls),
     path('', views.home_redirect, name='home'),
     path('login/', views.login_page, name='login'),
+    path('logout', views.logout_view, name='logout'),
     path('admin/', include("userAdmin.urls")),
     path('staffs/', include('userStaff.urls')),
 ]
