@@ -26,7 +26,8 @@ SECRET_KEY = 'django-insecure-eew(20&(*30l-@vr@kou$)b%!h^ln7+8gzo*r$jamd@$6%_o2g
 DEBUG = True
 
 ALLOWED_HOSTS = ['coderbroskii.pythonanywhere.com', '127.0.0.1']
-
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
 
 # Application definition
 
