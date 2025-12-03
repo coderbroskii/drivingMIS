@@ -1,0 +1,40 @@
+{% extends "userAdmin/layout.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/baseForm.css' %}">
+{% endblock extra_css %}
+
+{% block title %}
+<title>Add Payment</title>
+{% endblock title %}
+
+{% block content %}
+
+<div class="form-container">
+
+    <form method="POST" action="{% url 'userAdmin:updatePayment' id=paymentData.id %}">
+        {% csrf_token %}
+
+        <label for="name">Student: </label>
+        <input id='name' type="text" value="{{ paymentData.student.name }}" disabled>
+
+        <label for="amount">Amount Paid: </label>
+        <input type="number" id="amount" name="amountPaid" value={{paymentData.amountPaid}} required>
+
+        <label for="paymentDate">Payment Date:</label>
+        <input type='date' id="paymentDate" name="paymentDate"  value="{{paymentData.paymentDate|date:'Y-m-d'}}" >
+
+        <label for="paymentMethod">Payment Method: </label>
+        <select id="paymentMethod" name="paymentMethod">
+            <option value="Cash" {% if paymentData.paymentMethod == 'Cash' %}selected{% endif %} >Cash</option>
+            <option value="Online" {% if paymentData.paymentMethod == 'Online' %}selected{% endif %}>Online Payment</option>
+        </select>
+
+        <button type="submit">Update Payment</button>
+
+    </form>
+
+</div>
+
+{% endblock content %}

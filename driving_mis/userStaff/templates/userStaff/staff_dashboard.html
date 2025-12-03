@@ -1,0 +1,84 @@
+{% extends "userStaff/layout.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static "css/dashboard.css" %}">
+{% endblock extra_css %}
+
+{% block title %}
+<title>Dasboard</title>
+{% endblock title %}
+
+{% block content %}
+
+    {% if messages %}
+            <div id="messages-container">
+                {% for message in messages %}
+            <div class="message {{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+            </div>
+    {% endif %}
+
+    <div class="dashboard-container">
+
+    <!-- ROW 1 : STATS -->
+    <div class="dashboard-grid">
+        <div class="dashboard-card">
+            Students: {{total_students}}
+            <small>Total Registered</small>
+        </div>
+
+        <div class="dashboard-card">
+            Payments: {{total_payments}}
+            <small>Total Transactions</small>
+        </div>
+
+        <div class="dashboard-card">
+            Amount: {{total_amount_today}}
+            <small>Total Fees Collected Today</small>
+        </div>
+    </div>
+
+    <br>
+
+    <!-- ROW 2 : ACTION BUTTONS -->
+    <div class="dashboard-grid">
+        <a href= "{% url "userStaff:StaffAddStudent" %}" class="dashboard-action">Add Student</a>
+        <a href="{% url "userStaff:StaffAddPayment" %}" class="dashboard-action">Add Payment</a>
+    </div>
+
+    <br>
+
+    <!-- FULL WIDTH : RECENT REGISTRATIONS -->
+    <div class="dashboard-grid">
+        <div class="dashboard-full">
+            <h3>Recent Registrations</h3>
+            <br>
+            <table class="table">
+                <tr>
+                        <th>Name</th>
+                        <th>Date</th>
+                    </tr>
+                {% for student in recent_students %}
+                    <tr>
+                        <td>{{student.name}}</td>
+                        <td>{{student.enrollment_date|date:"M d, Y"}}</td>
+                    </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="2">No recent registrations</td>
+                        </tr>
+                {% endfor %}
+                
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+<script src="{% static 'js/base.js' %}" defer></script>
+{% endblock %}

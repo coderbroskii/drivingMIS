@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Driving Institute MIS{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/layout.css' %}">
+    {% block extra_css %}{% endblock extra_css %}
+</head>
+
+</head>
+<body>
+
+    <!-- Top bar -->
+    <div class="topbar">
+        <div class="title">Driving Institute Management System</div>
+            <form action="{% url 'userStaff:logout' %}" method='POST'>
+                {% csrf_token %}
+                <button>Logout</button>
+            </form> 
+    </div>
+
+    <!-- Navigation bar -->
+    <div class="nav">
+        <a href="{% url 'userStaff:staffDashboard' %}">Dashboard</a>
+        <a href="{% url 'userStaff:staffStudents' %}">Students</a>
+        <a href="{% url 'userStaff:staffPayments' %}">Payments</a>
+    </div>
+
+    <!-- Main content -->
+    <div class="main-content">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    {% block extra_js %}{% endblock %}
+    
+</body>
+</html>

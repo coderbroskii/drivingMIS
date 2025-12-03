@@ -1,0 +1,44 @@
+{% extends "userStaff/layout.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/baseForm.css' %}">
+{% endblock extra_css %}
+
+{% block title %}
+<title>Add Payment</title>
+{% endblock title %}
+
+{% block content %}
+
+<div class="form-container">
+
+    <form method="POST" action="{% url 'userStaff:StaffAddPayment' %}">
+        {% csrf_token %}
+
+        <label for="name">Student: </label>
+        <select id="student" name="student">
+            {% for student in students %}
+                <option value="{{ student.slug }}">{{ student.name }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="amount">Amount Paid: </label>
+        <input type="number" id="amount" name="amountPaid" required>
+
+        <label for="paymentDate">Payment Date:</label>
+        <input type='date' id="paymentDate" name="paymentDate"></input>
+
+        <label for="paymentMethod">Payment Method: </label>
+        <select id="paymentMethod" name="paymentMethod">
+            <option value="Cash">Cash</option>
+            <option value="Online">Online Payment</option>
+        </select>
+
+        <button type="submit">Add Payment</button>
+
+    </form>
+
+</div>
+
+{% endblock content %}

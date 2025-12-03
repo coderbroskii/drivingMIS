@@ -1,0 +1,53 @@
+{% extends "userAdmin/layout.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/baseForm.css' %}">
+{% endblock extra_css %}
+
+{% block title %}
+<title>Add Student</title>
+{% endblock title %}
+
+{% block content %}
+
+<div class="form-container">
+
+    <form method="POST" action="{% url 'userAdmin:addStudent' %}">
+        {% csrf_token %}
+
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="phone">Phone Number:</label>
+        <input type="text" id="phone" name="phone" required>
+
+        <label for="address">Address:</label>
+        <textarea id="address" name="address"></textarea>
+
+        <label for="course">Course / Package:</label>
+        <select id="course" name="course">
+            <option value="A">Bike (A)</option>
+            <option value="B">Car (B)</option>
+            <option value="K">Scooter (K)</option>
+        </select>
+
+        <label for="total_fee">Total Fee:</label>
+        <input type="text" id="total_fee" name="total_fee">
+
+        <label for="fees_paid">Fees Paid:</label>
+        <input type="text" id="fees_paid" name="fees_paid">
+
+        <label for="enrollment_date">Enrollment Date:</label>
+        <input type="date" id="enrollment_date" name="enrollment_date" required>
+
+        <label for="notes">Notes:</label>
+        <textarea id="notes" name="notes"></textarea>
+
+        <button type="submit">Add Student</button>
+
+    </form>
+
+</div>
+
+{% endblock content %}

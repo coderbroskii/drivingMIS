@@ -1,0 +1,34 @@
+{% extends "userAdmin/layout.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/baseForm.css' %}">
+{% endblock extra_css %}
+
+{% block title %}
+<title>Add Staff</title>
+{% endblock title %}
+
+{% block content %}
+
+<div class="form-container">
+
+    <form method="POST" action="{% url 'userAdmin:addStaff' %}">
+        {% csrf_token %}
+
+        <label for="name">Full Name: </label>
+        <input type="text" placeholder='Name' id='name' name='name'>
+
+        <label for="phone">Phone Number: </label>
+        <input type="text" id="phone" name="phone" placeholder='Number' required>
+
+        <label for="email">Email:</label>
+        <input type='Email' id="email" name="email" placeholder='Email'>
+
+        <button type="submit">Add Staff</button>
+
+    </form>
+
+</div>
+
+{% endblock content %}

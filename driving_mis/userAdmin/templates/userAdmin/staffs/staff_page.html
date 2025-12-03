@@ -1,0 +1,73 @@
+{% extends "userAdmin/layout.html" %}
+{% load static %}
+
+{% block title %}
+<title>Staffs</title>
+{% endblock title %}
+
+
+{% block content %}
+
+    {% if messages %}
+        <div id="messages-container">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+
+<!-- Add Payment Button -->
+<br>
+<div class="header">
+    <h2>Staff Management</h2>
+    <a href="{% url 'userAdmin:addStaff' %}" class="btn-add">Add Staff</a>
+</div>
+
+<div class='table-container'>
+<!-- Students Table -->
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Phone Number</th>
+                <th>Email</th>
+                <th>Created Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Example row -->
+            {% for staffData in staffs %}
+            <tr>
+                <td>{{staffData.name}}</td>
+                <td>{{staffData.phone}}</td>
+                <td>{{staffData.email}}</td>
+                <td>{{staffData.date}}</td>
+                <td class="actions-col">
+                <div class="actions-wrapper">
+                    <a href="{% url 'userAdmin:updateStaff' staffData.id %}" class="action-btn edit">Edit</a>
+
+                    <form method='POST' action = '{% url 'userAdmin:deleteStaff' staffData.id %}'>
+                        {% csrf_token %}
+                    <button class="action-btn delete" onclick = "
+                    return confirm('Are you sure you want to Delete {{ staffData.name }}?');
+                    ">Delete</a>
+                    </form>
+                </div>
+                </td>
+            </tr>
+            {% endfor %}
+            <!-- More rows will be rendered dynamically from DB later -->
+        </tbody>
+    </table>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+<script src="{% static 'js/base.js' %}" defer></script>
+{% endblock %}
+
+

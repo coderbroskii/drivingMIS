@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home Page</title>
+    <link rel="stylesheet" href=" {% static "css/baseForm.css" %} ">
+    <style>
+        body 
+        { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            margin-top: 100px; 
+        }
+
+        .btn 
+        {   
+            padding: 15px 30px; 
+            background-color: #333; 
+            color: #fff; 
+            border: none; 
+            border-radius: 5px; 
+            font-size: 18px; 
+            cursor: pointer; 
+            text-decoration: none; 
+        }
+
+        .btn:hover 
+        { 
+        background-color: #555; 
+        }
+
+        .message.success {
+            background-color: #28a745;   /* green */
+        }
+
+        .message.error {
+            background-color: #dc3545;   /* red */
+        }
+
+        .message.info {
+            background-color: #ffc107; /* yellow */
+            color:#171717;
+        }
+
+                /* Messages container fixed in bottom-right */
+        #messages-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 300px;       /* Adjust width as needed */
+            z-index: 9999;
+        }
+
+        /* Each message box */
+        .message {
+            padding: 15px 20px;
+            margin-top: 10px;
+            border-radius: 8px;
+            color: #fff;
+            font-weight: 500;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            opacity: 0.95;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    
+    {% if messages %}
+            <div id="messages-container">
+                {% for message in messages %}
+            <div class="message {{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+            </div>
+    {% endif %}
+
+    <h1>Welcome to Driving Institute MIS</h1>
+<div class='form-container'>
+    <form action=" {% url "login" %} " method='POST'>
+        {% csrf_token %}
+        {{form}}
+        <button>Login</button>
+    </form>
+</div>
+    <script src="{% static 'js/base.js' %}"></script>
+</body>
+</html>

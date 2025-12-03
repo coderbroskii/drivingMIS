@@ -1,0 +1,75 @@
+/* --- Global Form Wrapper --- */
+.form-container {
+    max-width: 500px;
+    width: 90%;
+    margin: 30px auto;
+    padding: 20px;
+
+    border: 1px solid #dedede; /* light border */
+    border-radius: 8px;
+    background: #c4c4c4; /* main background light */
+
+    box-shadow: 0 0 8px rgba(0,0,0,0.05);
+    font-family: Arial, sans-serif;
+    color: #171717; /* default text dark */
+}
+
+/* --- Form Title --- */
+.form-title {
+    text-align: center;
+    font-size: 22px;
+    margin-bottom: 20px;
+    color: #f25623; /* highlight orange for title */
+}
+
+/* --- Label Styling --- */
+.form-container label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+    font-size: 14px;
+    color: #171717; /* label dark */
+}
+
+/* --- Input + Textarea + Select --- */
+.form-container input,
+.form-container textarea,
+.form-container select {
+    width: 100%;
+    padding: 10px;
+
+    border: 1px solid #171717; /* subtle border */
+    border-radius: 5px;
+    font-size: 14px;
+    color: #171717; /* input text dark */
+    background: #fff; /* input background white */
+
+    margin-bottom: 15px;
+    box-sizing: border-box;
+}
+
+/* Textarea height default */
+.form-container textarea {
+    height: 80px;
+    resize: vertical;
+}
+
+/* --- Submit Button --- */
+.form-container button {
+    width: 100%;
+    padding: 12px;
+
+    background: #f25623; /* minimal orange */
+    color: #fff; /* button text white */
+
+    border: none;
+    border-radius: 5px;
+
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.form-container button:hover {
+    background: #d94d1f; /* slightly darker orange hover */
+}

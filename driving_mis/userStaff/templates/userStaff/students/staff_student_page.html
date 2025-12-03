@@ -1,0 +1,79 @@
+{% extends "userStaff/layout.html" %}
+{% load static %}
+
+{% block title %}
+<title>Students</title>
+{% endblock title %}
+
+{% block content %}
+    {% if messages %}
+            <div id="messages-container">
+                {% for message in messages %}
+            <div class="message {{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+            </div>
+    {% endif %}
+<!-- Add Student Button -->
+<br>
+<div class="header">
+    <h2>Students</h2>
+    <a href="{% url 'userStaff:StaffAddStudent' %}" class="btn-add">Add Student</a>
+</div>
+
+<div class='table-container'>
+<!-- Students Table -->
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Contact</th>
+            <th>Address</th>
+            <th>Course/Package</th>
+            <th>Enrollment Date</th>
+            <th>Total Fee</th>
+            <th>Fees Paid</th>
+            <th>Balance</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Example row -->
+        {% for studentData in students %}
+        <tr>
+            <td>{{studentData.name}}</td>
+            <td>{{studentData.phone}}</td>
+            <td>{{studentData.address}}</td>
+            <td>{{studentData.get_course_display}}</td>
+            <td>{{studentData.enrollment_date}}</td>
+            <td>{{studentData.total_fee}}</td>
+            <td>{{studentData.fees_paid}}</td>
+            <td>{{studentData.balance}}</td>
+            <td class="actions-col">
+                <div class="actions-wrapper">
+                    <form method="GET" action="{% url 'userStaff:StaffUpdateStudent' studentData.slug %}">
+                        <button type="submit" class="action-btn edit">Edit</button>
+                    </form>
+                    <form method="POST" action="{% url 'userStaff:StaffDeleteStudent' studentData.slug %}">
+                        {% csrf_token %}
+                        <button type="submit" class="action-btn delete"
+                            onclick="return confirm('Are you sure you want to delete {{ studentData.name }}?');">
+                            Delete
+                        </button>
+                    </form>
+                </div>
+            </td>
+
+        </tr>
+        {% endfor %}
+        <!-- More rows will be rendered dynamically from DB later -->
+    </tbody>
+</table>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/base.js' %}" defer></script>
+{% endblock %}
