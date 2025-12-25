@@ -11,21 +11,40 @@
 
 {% block content %}
 
+    {% if messages %}
+        <div id="messages-container">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
 <div class="form-container">
 
     <form method="POST" action="{% url 'userAdmin:addStaff' %}">
         {% csrf_token %}
 
-        <label for="name">Full Name: </label>
-        <input type="text" placeholder='Name' id='name' name='name'>
+        <label for="name">Full Name:</label>
+        <input type="text" id="name" name="name" placeholder="Full Name" required>
 
-        <label for="phone">Phone Number: </label>
-        <input type="text" id="phone" name="phone" placeholder='Number' required>
+        <label for="phone">Phone Number:</label>
+        <input type="text" id="phone" name="phone" placeholder="Phone Number" required>
 
         <label for="email">Email:</label>
-        <input type='Email' id="email" name="email" placeholder='Email'>
+        <input type="email" id="email" name="email" placeholder="Email" required>
 
-        <button type="submit">Add Staff</button>
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" placeholder="Username" required>
+
+        <label for="password1">Password:</label>
+        <input type="password" id="password1" name="password1" placeholder="Password" required>
+
+        <label for="password2">Confirm Password:</label>
+        <input type="password" id="password2" name="password2" placeholder="Confirm Password" required>
+
+        <button type="submit">Register Staff</button>
 
     </form>
 

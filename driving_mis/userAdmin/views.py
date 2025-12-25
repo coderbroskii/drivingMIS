@@ -3,7 +3,8 @@ from .models import Student,Payment,Staff
 from django.db.models import Sum  
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.utils.timezone import now 
+from django.utils.timezone import now
+from django.contrib.auth.models import User
 
 @login_required
 def dashboard_page(request):
@@ -141,14 +142,26 @@ def staffs_page(request):
 
 @login_required
 def staff_add(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         name = request.POST['name']
         phone = request.POST['phone']
         email = request.POST['email']
+        username = request.POST['username']
+        password1 = request.POST['password1']
+        password2 = request.POST['password2']
+
+        if password1 != password2:
+            messages.error(request, "Passwords do not match!")
+            return redirect('userAdmin:addStaff')
+        
+        user = User.objects.create_user(username=username, password=password1, email=email, first_name=name)
+        user.save()
+
+        # Save to your existing Staff model
         Staff.objects.create(
-            name = name,
-            phone = phone,
-            email = email,
+            name=name,
+            phone=phone,
+            email=email,
         )
         messages.success(request,'Staff Added!')
         return redirect ('userAdmin:staffs')

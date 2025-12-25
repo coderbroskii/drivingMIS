@@ -11,7 +11,7 @@ from django.utils.timezone import now
 @login_required
 def dashboard_page(request):
     if request.user.is_superuser:
-        return redirect('userStaff:dashboard')
+        return redirect('userAdmin:dashboard')
     total_students = Student.objects.count()
     total_payments = Payment.objects.count()
     total_amount_today = Payment.objects.aggregate(
@@ -76,7 +76,7 @@ def student_update(request, slug):
         messages.info(request, "Student Record Updated!")
         return redirect('userStaff:staffStudents')
     else :
-        return render(request, "userStaff/students/student_update_page.html", {"student" : student})
+        return render(request, "userStaff/students/staff_student_update_page.html", {"student" : student})
 
 @login_required
 def student_delete(request, slug):
@@ -85,7 +85,7 @@ def student_delete(request, slug):
         student.delete()
         messages.error(request,"Student Deleted")
         return redirect('userStaff:staffStudents')
-    return redirect('userAdmin:staffStudents')
+    return redirect('userStaff:staffStudents')
 
 # PAYMENTS
 @login_required
