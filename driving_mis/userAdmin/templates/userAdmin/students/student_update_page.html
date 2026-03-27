@@ -11,9 +11,19 @@
 
 {% block content %}
 
+    {% if messages %}
+                <div id="messages-container">
+                    {% for message in messages %}
+                <div class="message {{ message.tags }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+                </div>
+        {% endif %}
+
 <div class="form-container">
 
-    <form method="POST" action="{% url 'userAdmin:updateStudent' student.slug %}">
+    <form method="POST" action="{% url 'userAdmin:updateStudent' student.id %}">
         {% csrf_token %}
 
         <label for="name">Name:</label>
@@ -36,7 +46,7 @@
         <input type="text" id="total_fee" name="total_fee" value="{{student.total_fee}}">
 
         <label for="fees_paid">Fees Paid:</label>
-        <input type="text" id="fees_paid" name="fees_paid" value="{{student.fees_paid}}">
+        <input type="text" id="fees_paid" name="fees_paid" readonly value="{{student.fees_paid}}"> 
 
         <label for="enrollment_date">Enrollment Date:</label>
         <input type="date" id="enrollment_date" name="enrollment_date" value="{{ student.enrollment_date|date:'Y-m-d' }}" required>

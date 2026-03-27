@@ -5,6 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils.timezone import now
 from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
+from django.db import IntegrityError
 
 @login_required
 def dashboard_page(request):
@@ -46,42 +48,102 @@ def student_add(request):
         total_fee  = request.POST['total_fee']
         fees_paid  = request.POST['fees_paid']
         notes = request.POST['notes']
-        Student.objects.create(
-            name = name,
-            phone = phone,
-            address = address,
-            course = course,
-            enrollment_date = enrollment_date,
-            total_fee = total_fee,
-            fees_paid = fees_paid,
-            notes = notes,
-        )
-        messages.success(request,'Student Added!')
-        return redirect('userAdmin:students')
+
+        if not name.strip():
+            messages.error(request, "Name cannot be empty")
+            return redirect('userAdmin:addStudent')
+
+        if not phone.isdigit() or len(phone) != 10:
+            messages.error(request, "Phone number must be 10 digits")
+            return redirect('userAdmin:addStudent')
+        
+        if Student.objects.filter(phone=phone).exists():
+            messages.error(request, "Phone number already exists")
+            return redirect('userAdmin:addStudent')
+
+        if not total_fee.isdigit() or int(total_fee) <= 0:
+            messages.error(request, "Total fee must be a positive number")
+            return redirect('userAdmin:addStudent')
+
+        if not fees_paid.isdigit() or int(fees_paid) < 0:
+            messages.error(request, "Fees paid cannot be negative")
+            return redirect('userAdmin:addStudent')
+
+        if int(fees_paid) > int(total_fee):
+            messages.error(request, "Fees paid cannot exceed total fee")
+            return redirect('userAdmin:addStudent')
+        
+        try:
+            Student.objects.create(
+                name = name,
+                phone = phone,
+                address = address,
+                course = course,
+                enrollment_date = enrollment_date,
+                total_fee = total_fee,
+                fees_paid = fees_paid,
+                notes = notes,
+            )
+            messages.success(request,'Student Added!')
+            return redirect('userAdmin:students')
+        except IntegrityError:
+            messages.error(request, "Phone number already exists")
+            return redirect('userAdmin:addStudent')
     return render(request, "userAdmin/students/student_add_page.html")
 
 @login_required
-def student_update(request, slug):
-    student = Student.objects.get(slug=slug)
-    if request.method == 'POST' :
-        student.name = request.POST['name']
-        student.phone  = request.POST['phone']
-        student.address  = request.POST['address']
-        student.course  = request.POST['course']
-        student.enrollment_date  = request.POST['enrollment_date']
-        student.total_fee  = request.POST['total_fee']
-        student.fees_paid  = request.POST['fees_paid']
-        student.notes = request.POST['notes']
+def student_update(request, id):
+    student = get_object_or_404(Student, id=id)
+
+    if request.method == 'POST':
+        name = request.POST['name']
+        phone = request.POST['phone']
+        address = request.POST['address']
+        course = request.POST['course']
+        enrollment_date = request.POST['enrollment_date']
+        total_fee = request.POST['total_fee']
+        fees_paid = request.POST['fees_paid']
+        notes = request.POST['notes']
+
+        if not name.strip():
+            messages.error(request, "Name cannot be empty")
+            return redirect('userAdmin:updateStudent', id=id)
+
+        if not phone.isdigit() or len(phone) != 10:
+            messages.error(request, "Phone number must be 10 digits")
+            return redirect('userAdmin:updateStudent', id=id)
+
+        if not total_fee.isdigit() or int(total_fee) <= 0:
+            messages.error(request, "Total fee must be positive")
+            return redirect('userAdmin:updateStudent', id=id)
+
+        if not fees_paid.isdigit() or int(fees_paid) < 0:
+            messages.error(request, "Fees paid cannot be negative")
+            return redirect('userAdmin:updateStudent', id=id)
+
+        if int(fees_paid) > int(total_fee):
+            messages.error(request, "Fees paid cannot exceed total fee")
+            return redirect('userAdmin:updateStudent', id=id)
+        
+        student.name = name
+        student.phone = phone
+        student.address = address
+        student.course = course
+        student.enrollment_date = enrollment_date
+        student.total_fee = total_fee
+        student.fees_paid = fees_paid
+        student.notes = notes
         student.save()
-        messages.info(request, "Student Record Updated!")
+
+        messages.success(request, "Student Record Updated!")
         return redirect('userAdmin:students')
-    else :
-        return render(request, "userAdmin/students/student_update_page.html", {"student" : student})
+    return render(request,"userAdmin/students/student_update_page.html",{"student": student}
+    )
 
 @login_required
-def student_delete(request, slug):
+def student_delete(request, id):
     if request.method == 'POST' :
-        student = Student.objects.get(slug=slug)
+        student = Student.objects.get(id=id)
         student.delete()
         messages.error(request,"Student Deleted")
         return redirect('userAdmin:students')
@@ -96,21 +158,34 @@ def payments_page(request):
 @login_required
 def payment_add(request):
     students = Student.objects.all()
+
     if request.method == 'POST':
-        student_slug = request.POST['student']
-        amount = request.POST['amountPaid']
+        # student_slug = request.POST['student']
+        student_id = request.POST['student']  
+        amount = int(request.POST['amountPaid'])   # converting to int
         date = request.POST['paymentDate']
         method = request.POST['paymentMethod']
-        student_obj = Student.objects.get(slug=student_slug)
-        Payment.objects.create(
-            student = student_obj,
-            amountPaid = amount,
-            paymentDate = date,
-            paymentMethod = method,
+
+        student_obj = Student.objects.get(id=student_id)
+        if amount <= 0:
+            messages.error(request, "Payment must be greater than zero")
+        elif amount > student_obj.balance:
+            messages.error(request, "Payment exceeds remaining balance")
+        else:
+            payment = Payment(
+            student=student_obj,
+            amountPaid=amount,
+            paymentDate=date,
+            paymentMethod=method,
         )
-        messages.success(request,"Payment Recorded!")
-        return redirect ('userAdmin:payments')
-    return render(request, "userAdmin/payments/payment_add_page.html", {'students' : students })
+            payment.save()   #this saves the payment
+
+            messages.success(request, "Payment Recorded!")
+        return redirect('userAdmin:payments')
+
+    return render(
+        request,"userAdmin/payments/payment_add_page.html",{'students': students}
+    )
 
 @login_required
 def payment_update(request, id):
@@ -133,7 +208,6 @@ def payment_delete(request, id):
         messages.error(request, 'Payment Record Deleted!')
         return redirect('userAdmin:payments')
 
-
 # STAFFS
 @login_required
 def staffs_page(request):
@@ -150,6 +224,22 @@ def staff_add(request):
         password1 = request.POST['password1']
         password2 = request.POST['password2']
 
+        if not name.strip():
+            messages.error(request, "Name cannot be empty")
+            return redirect('userAdmin:addStaff')
+
+        if not phone.isdigit() or len(phone) != 10:
+            messages.error(request, "Phone number must be 10 digits")
+            return redirect('userAdmin:addStaff')
+        
+        if Staff.objects.filter(phone=phone).exists():
+            messages.error(request, "Phone number already exists")
+            return redirect('userAdmin:addStaff')
+        
+        if '@' not in email.strip() or '.' not in email.strip().split('@')[-1] or len(email.strip()) < 5:
+            messages.error(request, "Enter a valid email address")
+            return redirect('userAdmin:addStudent')
+
         if password1 != password2:
             messages.error(request, "Passwords do not match!")
             return redirect('userAdmin:addStaff')
@@ -157,7 +247,7 @@ def staff_add(request):
         user = User.objects.create_user(username=username, password=password1, email=email, first_name=name)
         user.save()
 
-        # Save to your existing Staff model
+        # this saves to existing staff model
         Staff.objects.create(
             name=name,
             phone=phone,
@@ -170,10 +260,32 @@ def staff_add(request):
 @login_required
 def staff_update(request, staff_id):
     staff = Staff.objects.get(id = staff_id)
+    
     if request.method == 'POST': 
-        staff.name = request.POST['name']
-        staff.phone = request.POST['phone']
-        staff.email = request.POST['email']
+        name = request.POST['name']
+        phone = request.POST['phone']
+        email = request.POST['email']
+
+        if not name.strip():
+            messages.error(request, "Name cannot be empty")
+            return redirect('userAdmin:updateStaff', staff_id = staff_id)
+
+        if not phone.isdigit() or len(phone) != 10:
+            messages.error(request, "Phone number must be 10 digits")
+            return redirect('userAdmin:updateStaff', staff_id=staff_id)
+        
+        if Staff.objects.filter(phone=phone).exclude(id=staff_id).exists():
+            messages.error(request, "Phone number already exists")
+            return redirect('userAdmin:updateStaff' , staff_id=staff_id)
+        
+        if '@' not in email.strip() or '.' not in email.strip().split('@')[-1] or len(email.strip()) < 5:
+            messages.error(request, "Enter a valid email address")
+            return redirect('userAdmin:updateStaff' , staff_id=staff_id)
+        
+        staff.name = name
+        staff.phone = phone
+        staff.email = email
+
         staff.save()
         messages.info(request, 'Staff Updated!')
         return redirect('userAdmin:staffs')

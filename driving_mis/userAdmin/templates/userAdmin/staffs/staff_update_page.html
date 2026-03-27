@@ -11,6 +11,16 @@
 
 {% block content %}
 
+    {% if messages %}
+        <div id="messages-container">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    
 <div class="form-container">
 
     <form method="POST" action="{% url 'userAdmin:updateStaff' staff.id %}">

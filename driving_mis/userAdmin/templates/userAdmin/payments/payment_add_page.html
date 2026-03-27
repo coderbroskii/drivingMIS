@@ -19,7 +19,7 @@
         <label for="name">Student: </label>
         <select id="student" name="student">
             {% for student in students %}
-                <option value="{{ student.slug }}">{{ student.name }}</option>
+                <option value="{{ student.id }}">{{ student }}</option>
             {% endfor %}
         </select>
 

@@ -15,7 +15,7 @@
             {% endfor %}
             </div>
     {% endif %}
-<!-- Add Student Button -->
+
 <br>
 <div class="header">
     <h2>Students</h2>
@@ -52,10 +52,10 @@
             <td>{{studentData.balance}}</td>
             <td class="actions-col">
                 <div class="actions-wrapper">
-                    <form method="GET" action="{% url 'userStaff:StaffUpdateStudent' studentData.slug %}">
+                    <form method="GET" action="{% url 'userStaff:StaffUpdateStudent' studentData.id %}">
                         <button type="submit" class="action-btn edit">Edit</button>
                     </form>
-                    <form method="POST" action="{% url 'userStaff:StaffDeleteStudent' studentData.slug %}">
+                    <form method="POST" action="{% url 'userStaff:StaffDeleteStudent' studentData.id %}">
                         {% csrf_token %}
                         <button type="submit" class="action-btn delete"
                             onclick="return confirm('Are you sure you want to delete {{ studentData.name }}?');">

@@ -13,8 +13,8 @@ urlpatterns = [
     path('payments/', views.payments_page, name='staffPayments'),
 
     path('students/add/', views.student_add, name='StaffAddStudent'),
-    path('students/update/<slug:slug>/', views.student_update, name='StaffUpdateStudent'),
-    path('students/delete/<slug:slug>/', views.student_delete, name='StaffDeleteStudent'),
+    path('students/update/<int:id>/', views.student_update, name='StaffUpdateStudent'),
+    path('students/delete/<int:id>/', views.student_delete, name='StaffDeleteStudent'),
 
     path('payments/add/', views.payment_add, name='StaffAddPayment'),
     path('payments/update/<int:id>/', views.payment_update, name='StaffUpdatePayment'),
